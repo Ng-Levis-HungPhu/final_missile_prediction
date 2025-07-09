@@ -386,10 +386,10 @@ document.querySelector('.overlap-3').addEventListener('click', async () => {
 
     
     // 1. SỬ DỤNG KHI BUILD LIVE SERVER
-    const response = await fetch("http://127.0.0.1:5000/predict", {
+    // const response = await fetch("http://127.0.0.1:5000/predict", {
 
     // 2. SỬ DỤNG KHI BUILD BACKEND 
-    // const response = await fetch("https://draft-ending.onrender.com/predict", {  
+    const response = await fetch("https://final-missile-prediction.onrender.com/predict", {  
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({mode, mach, aoa, ln, swept, lln})
