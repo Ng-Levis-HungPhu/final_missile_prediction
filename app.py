@@ -14,7 +14,7 @@ from sklearn.preprocessing import MinMaxScaler
 app = Flask(__name__)
 CORS(app)
 
-MODEL_DIR = "1. SAVING MODELS"
+MODEL_DIR = "1. SAVING MODELS GITHUB"
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -29,34 +29,28 @@ def predict():
         lln = float(data["lln"])
 
         if mode == "NASA":
+            warning_msg = ""
+
             if not (-4 <= aoa <= 25):
                 return jsonify({"error": "Góc tấn (Angle of Attack) phải nằm trong khoảng từ -4 đến 25)"}),400
             elif -4 <= aoa < -2.5:
-                warning_msg = "Kết quả dự đoán có thể có sai số lên tới"
-            else:
-                warning_msg = ""
+                warning_msg = "Kết quả dự đoán CL và CD có thể có sai số lên tới lần lượt là: 32.22% và 19.18%"
 
-
-            if mach < 1.2:
+            if mach < 1.2 :
                 return jsonify({"error": "Giá trị Mach phải lớn hơn hoặc bằng 1.2"}), 400
             elif 1.2 <= mach <= 1.6:
-                warning_msg = "Kết quả dự đoán có thể có sai số lên tới 30%"
+                warning_msg = "Kết quả dự đoán CL và CD có thể có sai số lên tới lần lượt là: 18.74% và 15.28%"            
             elif mach >= 3.2:
-                warning_msg = "Kết quả dự đoán có thể có sai số lên tới 40%"
-            else:
-                warning_msg = ""    
+                warning_msg = "Kết quả dự đoán CL và CD có thể có sai số lên tới 40%"
+
 
             if not (3 <= ln <= 20.32):
                 return jsonify({"error": "Chiều dài mũi (Ln) phải nằm trong khoảng từ 3 đến 20.32"}), 400
             elif 3 <= ln < 6:
-                warning_msg ="Kết quả dự đoán có thể có sai số lên tới"
-            else:
-                warning_msg = ""
+                warning_msg ="Kết quả dự đoán CD có thể có sai số lên tới 19.60%"
 
             if not (5 <= swept <= 70):
                 return jsonify({"error": "Góc swept (Swept Angle) phải nằm trong khoảng từ 5 đến 70)"}),400
-            else:
-                warning_msg = ""
 
             model_cl_path = os.path.join(MODEL_DIR, "NASA_cl.h5")
             model_cd_path = os.path.join(MODEL_DIR, "NASA_cd.h5")
@@ -72,20 +66,13 @@ def predict():
             input_data_scaled = scaler.transform(input_data)
         
         elif mode == "Von-Karman Nose":
-            if not (-4 <= aoa <= 25):
-                return jsonify({"error": "Góc tấn (Angle of Attack) phải nằm trong khoảng từ -4 đến 25)"}),400
-            elif -4 <= aoa < -2.5:
-                warning_msg = "Kết quả dự đoán có thể có sai số lên tới"
+            if not (-2 <= aoa <= 20):
+                return jsonify({"error": "Góc tấn (Angle of Attack) phải nằm trong khoảng từ -2 đến 20)"}),400
             else:
                 warning_msg = ""
 
-
-            if mach < 1.2:
-                return jsonify({"error": "Giá trị Mach phải lớn hơn hoặc bằng 1.2"}), 400
-            elif 1.2 <= mach <= 1.6:
-                warning_msg = "Kết quả dự đoán có thể có sai số lên tới 30%"
-            elif mach >= 3.2:
-                warning_msg = "Kết quả dự đoán có thể có sai số lên tới 40%"  
+            if not (1.7 <= mach <= 2.86):
+                return jsonify({"error": "Giá trị Mach phải nằm trong khoảng từ 1.7 đến 2.86"}), 400
             else:
                 warning_msg = ""
 
@@ -189,10 +176,10 @@ def predict():
         return jsonify({"error": str(e)}), 400
 
 # 1. SỬ DỤNG KHI BUILD LIVE SERVER
-if __name__ == "__main__":
-    app.run(debug=True)
+# if __name__ == "__main__":
+#     app.run(debug=True)
     
 # 2. SỬ DỤNG KHI BUILD BACKEND
-# if __name__ == "__main__":
-#     port = int(os.environ.get("PORT", 5000))
-#     app.run(host="0.0.0.0", port=port)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
